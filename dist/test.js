@@ -18,12 +18,12 @@ const connectionOptions = {
 };
 (async () => {
     console.log(connectionOptions);
-    const client = new SecureFileTransferClient(protocol);
+    const client = new SecureFileTransferClient(protocol, process.env.ROOT_PATH);
     try {
         await client.connect(connectionOptions);
         console.log(`Connected using ${protocol.toUpperCase()}`);
         // List files in the root directory
-        const files = await client.list(process.env.ROOT_PATH);
+        const files = await client.list('/');
         console.log('Files:', files);
         // Upload, download, rename, delete operations can be performed as needed
         // await client.uploadFile(
