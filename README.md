@@ -135,7 +135,3 @@ This project is open source and available under the [MIT License](LICENSE).
 
 Contributions are welcome! Please submit issues and pull requests for any bug
 fixes, improvements, or new features.
-
----
-
-Happy coding with **Secure File Transfer Client**!
