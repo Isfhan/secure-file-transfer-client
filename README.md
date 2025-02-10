@@ -1,7 +1,3 @@
-Below is an example README.md for your open‐source package:
-
----
-
 # Secure File Transfer Client
 
 **Secure File Transfer Client** is an open‐source npm package that abstracts
