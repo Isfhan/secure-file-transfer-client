@@ -2,10 +2,14 @@
 import SftpClientLib from 'ssh2-sftp-client';
 
 // Import stuff from utils
-import { resolveRemotePath, normalizeDir } from './utils/index.js';
+import {
+    resolveRemotePath,
+    normalizeDir,
+    mapSFTPFileInfo,
+} from './utils/index.js';
 
 // Import types
-import { IFileTransferClient } from './types/index.js';
+import { IFileTransferClient, ItemInfo } from './types/index.js';
 import type { ConnectOptions, FileInfo } from 'ssh2-sftp-client';
 
 export class SFTPClient implements IFileTransferClient {
@@ -53,7 +57,7 @@ export class SFTPClient implements IFileTransferClient {
      * @returns A promise that resolves with an array of FileInfo objects.
      * @throws {Error} If listing the directory fails.
      */
-    async list(remoteDir?: string): Promise<FileInfo[]> {
+    async list(remoteDir?: string): Promise<ItemInfo[]> {
         try {
             const dirToResolve = remoteDir ?? '';
             const path = resolveRemotePath(
@@ -61,7 +65,8 @@ export class SFTPClient implements IFileTransferClient {
                 this.currentDir,
                 dirToResolve
             );
-            return await this.client.list(path);
+            const rawList: FileInfo[] = await this.client.list(path);
+            return rawList.map(mapSFTPFileInfo);
         } catch (error: any) {
             console.error('SFTPClient: Error listing directory:', error);
             throw new Error('SFTPClient: List failed: ' + error.message);

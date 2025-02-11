@@ -14,14 +14,19 @@ throughout its API methods, making it both developer-friendly and reliable.
 -   **Unified API:** Use the same methods for connecting, listing, uploading,
     downloading, renaming, deleting, changing directories, and retrieving the
     current directory.
+
 -   **Protocol Flexibility:** Easily switch between FTP, FTPS, and SFTP by
     setting a configuration value.
+
 -   **Consistent Path Resolution:** All file operations are anchored relative to
     a configurable root path and current working directory using shared utility
     functions.
+
 -   **Robust Error Handling:** Every method wraps operations in try/catch blocks
     to provide meaningful error messages with context.
+
 -   **TypeScript:** Provides strong typing for a robust developer experience.
+
 -   **Open Source:** Licensed under the MIT License.
 
 ## Installation
@@ -159,6 +164,17 @@ new SecureFileTransferClient(protocol: 'ftp' | 'ftps' | 'sftp', rootPath: string
 
 -   **disconnect(): Promise<void>** Disconnects from the server. _Error
     handling:_ Disconnect errors are caught and logged.
+
+### Unified File Listing with ItemInfo (added in version 1.1.0)
+
+File listings now return a standardized structure defined by the `ItemInfo`
+interface. This interface unifies file information across FTP and SFTP by
+mapping raw file info into a common format with properties such as `name`,
+`type`, `size`, `modifiedAt`, `owner`, `group`, `permissions`, and boolean flags
+`isDirectory` and `isFile`.  
+Both the FTP and SFTP clients use mapping functions (`mapFTPFileInfo` and
+`mapSFTPFileInfo`) to convert the underlying file info into `ItemInfo[]`,
+ensuring a consistent API for file listings.
 
 ## Testing
 

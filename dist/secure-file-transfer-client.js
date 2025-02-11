@@ -48,7 +48,7 @@ export class SecureFileTransferClient {
      * If no directory is provided, lists the current working directory.
      *
      * @param remoteDir The directory on the server to list. This is relative to the root path specified in the constructor.
-     * @returns A promise that resolves with an array of FileInfo objects for each file in the directory.
+     * @returns A promise that resolves with an array of ItemInfo objects for each file in the directory.
      * @throws {Error} If listing the directory fails.
      */
     async list(remoteDir) {

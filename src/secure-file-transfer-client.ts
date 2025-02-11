@@ -3,7 +3,7 @@ import { FTPClient } from './ftp-client.js';
 import { SFTPClient } from './sftp-client.js';
 
 // Import types
-import { IFileTransferClient, Protocol } from './types/index.js';
+import { IFileTransferClient, ItemInfo, Protocol } from './types/index.js';
 import type { AccessOptions } from 'basic-ftp';
 import type { ConnectOptions } from 'ssh2-sftp-client';
 
@@ -60,10 +60,10 @@ export class SecureFileTransferClient implements IFileTransferClient {
      * If no directory is provided, lists the current working directory.
      *
      * @param remoteDir The directory on the server to list. This is relative to the root path specified in the constructor.
-     * @returns A promise that resolves with an array of FileInfo objects for each file in the directory.
+     * @returns A promise that resolves with an array of ItemInfo objects for each file in the directory.
      * @throws {Error} If listing the directory fails.
      */
-    async list(remoteDir?: string): Promise<any> {
+    async list(remoteDir?: string): Promise<ItemInfo[]> {
         try {
             return await this.client.list(remoteDir);
         } catch (error: any) {

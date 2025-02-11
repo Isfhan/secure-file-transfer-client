@@ -1,5 +1,5 @@
-import { IFileTransferClient } from './types/index.js';
-import type { ConnectOptions, FileInfo } from 'ssh2-sftp-client';
+import { IFileTransferClient, ItemInfo } from './types/index.js';
+import type { ConnectOptions } from 'ssh2-sftp-client';
 export declare class SFTPClient implements IFileTransferClient {
     private client;
     private basePath;
@@ -27,7 +27,7 @@ export declare class SFTPClient implements IFileTransferClient {
      * @returns A promise that resolves with an array of FileInfo objects.
      * @throws {Error} If listing the directory fails.
      */
-    list(remoteDir?: string): Promise<FileInfo[]>;
+    list(remoteDir?: string): Promise<ItemInfo[]>;
     /**
      * Changes the current working directory on the remote server.
      *

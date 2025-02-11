@@ -1,5 +1,5 @@
-import { AccessOptions, FileInfo } from 'basic-ftp';
-import { IFileTransferClient } from './types/index.js';
+import { AccessOptions } from 'basic-ftp';
+import { IFileTransferClient, ItemInfo } from './types/index.js';
 export declare class FTPClient implements IFileTransferClient {
     private client;
     private basePath;
@@ -24,10 +24,10 @@ export declare class FTPClient implements IFileTransferClient {
      * If no directory is provided, lists the current working directory.
      *
      * @param remoteDir - Optional remote directory.
-     * @returns A promise that resolves with an array of FileInfo objects.
+     * @returns A promise that resolves with an array of ItemInfo objects.
      * @throws {Error} If listing the directory fails.
      */
-    list(remoteDir?: string): Promise<FileInfo[]>;
+    list(remoteDir?: string): Promise<ItemInfo[]>;
     /**
      * Changes the current working directory on the FTP server.
      *

@@ -2,10 +2,14 @@
 import { Client as BasicFtpClient, AccessOptions, FileInfo } from 'basic-ftp';
 
 // Import stuff from utils
-import { resolveRemotePath, normalizeDir } from './utils/index.js';
+import {
+    resolveRemotePath,
+    normalizeDir,
+    mapFTPFileInfo,
+} from './utils/index.js';
 
 // Import types
-import { IFileTransferClient } from './types/index.js';
+import { IFileTransferClient, ItemInfo } from './types/index.js';
 
 export class FTPClient implements IFileTransferClient {
     // Private properties
@@ -46,10 +50,10 @@ export class FTPClient implements IFileTransferClient {
      * If no directory is provided, lists the current working directory.
      *
      * @param remoteDir - Optional remote directory.
-     * @returns A promise that resolves with an array of FileInfo objects.
+     * @returns A promise that resolves with an array of ItemInfo objects.
      * @throws {Error} If listing the directory fails.
      */
-    async list(remoteDir?: string): Promise<FileInfo[]> {
+    async list(remoteDir?: string): Promise<ItemInfo[]> {
         try {
             const dirToResolve = remoteDir ?? '';
             const path = resolveRemotePath(
@@ -57,7 +61,8 @@ export class FTPClient implements IFileTransferClient {
                 this.currentDir,
                 dirToResolve
             );
-            return await this.client.list(path);
+            const rawList: FileInfo[] = await this.client.list(path);
+            return rawList.map(mapFTPFileInfo);
         } catch (error: any) {
             console.error('FTPClient: Error listing directory:', error);
             throw new Error('FTPClient: List failed: ' + error.message);

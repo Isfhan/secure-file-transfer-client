@@ -1,7 +1,7 @@
 // Import stuff from ssh2-sftp-client
 import SftpClientLib from 'ssh2-sftp-client';
 // Import stuff from utils
-import { resolveRemotePath, normalizeDir } from './utils/index.js';
+import { resolveRemotePath, normalizeDir, mapSFTPFileInfo, } from './utils/index.js';
 export class SFTPClient {
     // Private properties
     client;
@@ -46,7 +46,8 @@ export class SFTPClient {
         try {
             const dirToResolve = remoteDir ?? '';
             const path = resolveRemotePath(this.basePath, this.currentDir, dirToResolve);
-            return await this.client.list(path);
+            const rawList = await this.client.list(path);
+            return rawList.map(mapSFTPFileInfo);
         }
         catch (error) {
             console.error('SFTPClient: Error listing directory:', error);
