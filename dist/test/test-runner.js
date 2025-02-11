@@ -1,4 +1,6 @@
 import { runListTest } from './list.test.js';
+import { runCdTest } from './cd.test.js';
+import { runPwdTest } from './pwd.test.js';
 import { runUploadTest } from './upload.test.js';
 import { runDownloadTest } from './download.test.js';
 import { runRenameTest } from './rename.test.js';
@@ -7,6 +9,10 @@ import { runDeleteTest } from './delete.test.js';
     try {
         console.log('Starting List Test');
         await runListTest();
+        console.log('Starting CD Test');
+        await runCdTest();
+        console.log('Starting PWD Test');
+        await runPwdTest();
         console.log('Starting Upload Test');
         await runUploadTest();
         console.log('Starting Download Test');

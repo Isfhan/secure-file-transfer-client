@@ -1,4 +1,3 @@
-// test/upload.test.ts
 import { createClient } from './common.js';
 
 export async function runUploadTest() {
