@@ -66,7 +66,7 @@ const ftpOptions: AccessOptions = {
 // The rootPath is used as the base for all operations.
 const client = new SecureFileTransferClient(
     'sftp',
-    '/var/www/vhosts/pallets.ftp.arrowline.eu/ftp/'
+    '/var/www/vhosts/yourdomain.com/ftp/'
 );
 
 (async () => {
