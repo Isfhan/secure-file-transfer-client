@@ -53,3 +53,5 @@ package-lock.json
 src/ftpClient.js
 src/index.js
 .vscode/settings.json
+
+dist/
