@@ -1,6 +1,6 @@
 {
   "name": "secure-file-transfer-client",
-  "version": "1.1.0",
+  "version": "1.5.0",
   "description": "A unified file transfer client supporting FTP/FTPS and SFTP, built on basic-ftp and ssh2-sftp-client.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,6 +13,10 @@
     "test": "node dist/test/test-runner.js"
   },
   "keywords": [
+    "proxy",
+    "socks",
+    "http",
+    "https",
     "ftp",
     "ftps",
     "sftp",
@@ -20,7 +24,11 @@
     "secure",
     "client",
     "npm package",
-    "typescript"
+    "typescript",
+    "proxy support for sftp",
+    "socks support for sftp",
+    "http support for sftp",
+    "https support for sftp"
   ],
   "author": "Isfhan Ahmed",
   "license": "MIT",
@@ -28,6 +36,7 @@
     "@types/node": "^22.10.7",
     "basic-ftp": "^5.0.3",
     "dotenv": "^16.4.7",
+    "socks": "^2.8.7",
     "ssh2-sftp-client": "^9.0.1"
   },
   "devDependencies": {

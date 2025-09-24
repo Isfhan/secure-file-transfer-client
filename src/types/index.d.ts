@@ -1,3 +1,5 @@
+import type { ConnectOptions } from 'ssh2-sftp-client';
+
 // Represents a file transfer client
 export interface IFileTransferClient {
     connect(options: any): Promise<void>;
@@ -38,4 +40,25 @@ interface NormalizedType {
     type: 'file' | 'directory' | 'symlink' | 'unknown';
     isDirectory: boolean;
     isFile: boolean;
+}
+
+export type ProxyOption = {
+    enabled: boolean;
+    type: 'socks5' | 'socks4' | 'http' | 'https';
+    host: string;
+    port: number | string;
+    username: string;
+    password: string;
+    dedicated_ip?: string;
+    location?: string;
+    service_type?: string;
+    // If proxy endpoint expects TLS (e.g. port 9443) set secure: true
+    secure?: boolean;
+    // Optionally control TLS verification when secure=true
+    secureRejectUnauthorized?: boolean;
+};
+
+// Extend ConnectOptions with our proxy option locally
+export interface ConnectOptionsWithProxy extends ConnectOptions {
+    proxy?: ProxyOption;
 }

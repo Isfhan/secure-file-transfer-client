@@ -3,13 +3,19 @@ import { FTPClient } from './ftp-client.js';
 import { SFTPClient } from './sftp-client.js';
 
 // Import types
-import { IFileTransferClient, ItemInfo, Protocol } from './types/index.js';
+import {
+    ConnectOptionsWithProxy,
+    IFileTransferClient,
+    ItemInfo,
+    Protocol,
+} from './types/index.js';
 import type { AccessOptions } from 'basic-ftp';
 import type { ConnectOptions } from 'ssh2-sftp-client';
 
 export class SecureFileTransferClient implements IFileTransferClient {
     // Private property
     private client: IFileTransferClient;
+    private protocol: Protocol;
 
     /**
      * Constructs a new instance of the SecureFileTransferClient class.
@@ -21,6 +27,10 @@ export class SecureFileTransferClient implements IFileTransferClient {
      * @throws Error if an unsupported protocol is specified.
      */
     constructor(protocol: Protocol = 'ftp', rootPath: string) {
+        // Set the protocol
+        this.protocol = protocol;
+
+        // Create the client based on the protocol
         if (protocol === 'sftp') {
             // Create a new SFTP client
             this.client = new SFTPClient(rootPath);
@@ -28,6 +38,7 @@ export class SecureFileTransferClient implements IFileTransferClient {
             // Create a new FTP client
             this.client = new FTPClient(rootPath);
         } else {
+            // Throw an error if the protocol is unsupported
             throw new Error('Unsupported protocol: ' + protocol);
         }
     }
@@ -36,7 +47,7 @@ export class SecureFileTransferClient implements IFileTransferClient {
      * Connects to the remote server using the given options.
      *
      * @param options The options to use to connect to the remote server. If the protocol is 'ftp' or 'ftps',
-     *                this is an AccessOptions object. If the protocol is 'sftp', this is a ConnectOptions object.
+     * this is an AccessOptions object. If the protocol is 'sftp', this is a ConnectOptions object.
      * @returns A promise that resolves when the connection is established.
      * @throws {Error} If connecting to the remote server fails.
      */
@@ -46,6 +57,17 @@ export class SecureFileTransferClient implements IFileTransferClient {
             : ConnectOptions
     ): Promise<void> {
         try {
+            // If user passes a proxy but protocol is FTP/FTPS, surface a clear error.
+            if (
+                this.protocol !== 'sftp' &&
+                (options as ConnectOptionsWithProxy)?.proxy
+            ) {
+                throw new Error(
+                    'Proxy is only supported for SFTP. FTP/FTPS proxy is not supported by this package.'
+                );
+            }
+
+            // Connect to the client
             await this.client.connect(options);
         } catch (error: any) {
             console.error('SecureFileTransferClient: Error connecting:', error);

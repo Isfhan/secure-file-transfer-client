@@ -27,6 +27,9 @@ throughout its API methods, making it both developer-friendly and reliable.
 
 -   **TypeScript:** Provides strong typing for a robust developer experience.
 
+-   **Proxy Support (since v1.5.0):** Built-in support for SOCKS4/5 and
+    HTTP/HTTPS CONNECT proxies for SFTP connections.
+
 -   **Open Source:** Licensed under the MIT License.
 
 ## Installation
@@ -62,6 +65,25 @@ const ftpOptions: AccessOptions = {
 //   password: 'password'
 // };
 
+// Example options for SFTP with proxy support:
+// const sftpOptionsWithProxy: ConnectOptions & { proxy?: ProxyOption } = {
+//   host: 'sftp.example.com',
+//   username: 'username',
+//   password: 'password',
+//   proxy: {
+//     enabled: true,
+//     type: 'https', // 'socks5', 'socks4', 'http', or 'https'
+//     host: 'proxy.example.com',
+//     port: 8080,
+//     username: 'proxy_user',
+//     password: 'proxy_pass',
+//     dedicated_ip: 'proxy.example.com',
+//     location: 'Germany',
+//     service_type: 'fresh',
+//     secureRejectUnauthorized: false // For HTTPS proxies with custom certs
+//   }
+// };
+
 // Instantiate the client with the protocol and a root path.
 // The rootPath is used as the base for all operations.
 const client = new SecureFileTransferClient(
@@ -72,6 +94,7 @@ const client = new SecureFileTransferClient(
 (async () => {
     try {
         // Connect using the appropriate options (ftpOptions for FTP/FTPS or sftpOptions for SFTP)
+        // For SFTP with proxy, use sftpOptionsWithProxy instead
         await client.connect(ftpOptions);
         console.log('Connected successfully.');
 
@@ -165,6 +188,10 @@ new SecureFileTransferClient(protocol: 'ftp' | 'ftps' | 'sftp', rootPath: string
 -   **disconnect(): Promise<void>** Disconnects from the server. _Error
     handling:_ Disconnect errors are caught and logged.
 
+### Proxy Support (SFTP Only) (added in version 1.5.0)
+
+The SFTP client supports connecting through various proxy types:
+
 ### Unified File Listing with ItemInfo (added in version 1.1.0)
 
 File listings now return a standardized structure defined by the `ItemInfo`
@@ -176,6 +203,72 @@ Both the FTP and SFTP clients use mapping functions (`mapFTPFileInfo` and
 `mapSFTPFileInfo`) to convert the underlying file info into `ItemInfo[]`,
 ensuring a consistent API for file listings.
 
+### Supported Proxy Types
+
+-   **SOCKS4/SOCKS5**: Traditional SOCKS proxies with optional TLS wrapping
+-   **HTTP/HTTPS CONNECT**: HTTP proxies using the CONNECT method for tunneling
+
+### Proxy Configuration
+
+```ts
+import type { ProxyOption } from 'secure-file-transfer-client';
+
+const proxyConfig: ProxyOption = {
+    enabled: true,
+    type: 'https', // 'socks5', 'socks4', 'http', or 'https'
+    host: 'proxy.example.com',
+    port: 8080,
+    username: 'proxy_user',
+    password: 'proxy_pass',
+    dedicated_ip: 'proxy.example.com',
+    location: 'Germany',
+    service_type: 'fresh',
+    secureRejectUnauthorized: false, // For HTTPS proxies with custom certificates
+    secure: true,
+};
+```
+
+### Proxy Type Details
+
+**SOCKS4/5 Proxies:**
+
+-   Use `type: 'socks4'` or `type: 'socks5'`
+-   For TLS-wrapped SOCKS proxies, set `secure: true`
+-   Control TLS verification with `secureRejectUnauthorized`
+
+**HTTP/HTTPS CONNECT Proxies:**
+
+-   Use `type: 'http'` for plain HTTP proxies
+-   Use `type: 'https'` for HTTPS proxies (TLS-encrypted connection to proxy)
+-   Authentication via `username`/`password` using Basic Auth
+-   For HTTPS proxies with custom certificates, set
+    `secureRejectUnauthorized: false`
+
+### Example Usage
+
+```ts
+const client = new SecureFileTransferClient('sftp', '/remote/path');
+
+await client.connect({
+    host: 'sftp.example.com',
+    username: 'user',
+    password: 'pass',
+    proxy: {
+        enabled: true,
+        type: 'https',
+        host: 'proxy.example.com',
+        port: 9443,
+        username: 'proxy_user',
+        password: 'proxy_pass',
+        secureRejectUnauthorized: false,
+        dedicated_ip: 'proxy.example.com',
+        location: 'Germany',
+        service_type: 'fresh',
+        secure: true,
+    },
+});
+```
+
 ## Testing
 
 A comprehensive set of tests is included to ensure all functionality works as
@@ -184,6 +277,40 @@ expected. To build and run the tests, use:
 ```bash
 npm run build
 npm run test
+```
+
+### Environment Configuration
+
+Create a `.env` file (you can start from `.env.example`) to supply connection
+and optional proxy settings used by the tests:
+
+```env
+# Protocol: ftp | ftps | sftp
+PROTOCOL=sftp
+
+# Server credentials
+HOST=your.sftp.server
+USER=username
+PASSWORD=password
+
+# Base remote path for operations (used as root)
+ROOT_PATH=/remote/base/path
+
+# Optional: environment (affects FTPS cert verification in tests)
+NODE_ENV=development
+
+# Optional: Proxy settings (SFTP only)
+PROXY_ENABLED=false
+PROXY_TYPE=https # socks5 | socks4 | http | https
+PROXY_HOST=proxy.example.com
+PROXY_PORT=9443
+PROXY_USERNAME=
+PROXY_PASSWORD=
+PROXY_DEDICATED_IP=proxy.example.com
+PROXY_LOCATION=Germany
+PROXY_SERVICE_TYPE=fresh
+PROXY_SECURE=true
+PROXY_SECURE_REJECT_UNAUTHORIZED=false
 ```
 
 The tests execute in a predefined order (e.g., list, cd, pwd, upload, download,
