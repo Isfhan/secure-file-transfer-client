@@ -1,0 +1,24 @@
+# Exclude source and config not needed in the published package
+src/
+.node-version
+.editorconfig
+.eslintignore
+.eslintrc*
+.prettier*
+.vscode/
+.gitignore
+.git/
+
+# Exclude tests and local assets
+**/test/
+**/*.spec.*
+**/*.test.*
+coverage/
+
+# Exclude miscellaneous files
+.env*
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# Keep dist only (already whitelisted via package.json files field)
